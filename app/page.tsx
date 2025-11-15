@@ -74,7 +74,7 @@ export default function Home() {
         <section style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '12px', padding: '1.2rem', marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
             <h3>Popular</h3>
-            <a href="#" style={{ color: '#00d4ff', fontSize: '0.85rem' }}>View All 350+ Coins ></a>
+            <a href="#" style={{ color: '#00d4ff', fontSize: '0.85rem' }}>View All 350+ Coins &gt;</a>
           </div>
           {loading ? <p>Loading prices...</p> : (
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -103,4 +103,3 @@ export default function Home() {
     </>
   );
 }
-EOF

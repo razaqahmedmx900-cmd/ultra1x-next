@@ -1,4 +1,3 @@
-nano app/page.tsx <<'EOF'
 'use client';
 import { useEffect, useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';

@@ -1,12 +1,14 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 
-export default function VerifyOTP() {
+function VerifyOTPContent() {
   const [token, setToken] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const phone = searchParams.get('phone');
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,19 +19,31 @@ export default function VerifyOTP() {
     e.preventDefault();
     setError('');
 
+    if (!phone) {
+      setError('Phone number not found. Please sign up again.');
+      return;
+    }
+
     const { error } = await supabase.auth.verifyOtp({
+      phone,
       token,
       type: 'sms'
     });
 
-    if (error) setError(error.message);
-    else router.push('/dashboard');
+    if (error) {
+      setError(error.message);
+    } else {
+      router.push('/dashboard');
+    }
   };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0a0a0f' }}>
       <form onSubmit={verify} style={{ width: '400px', background: '#1a1a2e', padding: '2rem', borderRadius: '16px' }}>
         <h2 style={{ textAlign: 'center', color: '#00d4ff' }}>Enter OTP</h2>
+        <p style={{ textAlign: 'center', fontSize: '0.9rem', color: '#aaa' }}>
+          Sent to {phone || 'your phone'}
+        </p>
         <input
           placeholder="123456"
           value={token}
@@ -42,5 +56,13 @@ export default function VerifyOTP() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function VerifyOTP() {
+  return (
+    <Suspense fallback={<div style={{ color: '#fff', textAlign: 'center', marginTop: '2rem' }}>Loading...</div>}>
+      <VerifyOTPContent />
+    </Suspense>
   );
 }
